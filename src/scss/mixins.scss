@@ -1,0 +1,21 @@
+@mixin figure {
+    background: var(--mid-l);
+    box-shadow: var(--outer-shadow);
+    border-radius: 25px;
+}
+
+@mixin nav-font {
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+@mixin btn-font {
+    font-size: 18px;
+    line-height: 21px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text);
+}

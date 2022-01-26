@@ -1,0 +1,13 @@
+.btn {
+    @include figure;
+    @include btn-font;
+    border: none;
+    
+    transition: all 0.1s;
+    cursor: pointer;
+
+    &:active {
+        box-shadow: var(--inner-shadow);
+        font-size: 0.95em;
+    }
+}
