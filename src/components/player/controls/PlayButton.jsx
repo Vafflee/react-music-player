@@ -1,6 +1,4 @@
 import React from 'react';
-import PlayIcon from '../../../img/Play-icon.svg'
-import PauseIcon from '../../../img/Pause-icon.svg'
 
 export default function PlayButton(props) {    
     return (

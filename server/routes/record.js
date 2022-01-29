@@ -7,7 +7,7 @@ const ObjectId = require('mongodb').ObjectId;
 recordRoutes.route('/record').get((req, res) => {
     let db_connect = dbo.getDb();
     db_connect
-        .collection('musicinfo')
+        .collection('compositions')
         .find({})
         .toArray((err, result) => {
             if (err) throw err;
@@ -20,7 +20,7 @@ recordRoutes.route('/record/:id').get((req, response) => {
     let db_connect = dbo.getDb();
     let query = { _id: ObjectId(req.params.id) };
     db_connect
-        .collection('fs.files')
+        .collection('compositions')
         .findOne(query, (err, result) => {
             if (err) throw err;
             response.json(result);

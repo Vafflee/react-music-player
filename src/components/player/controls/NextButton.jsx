@@ -1,8 +1,8 @@
 import NextIcon from '../../../img/Next-icon.svg'
 
-export default function PrevButton() {    
+export default function PrevButton(props) {    
     return (
-        <button className="player__next btn">
+        <button onClick={() => props.handleClick()} className="player__next btn">
             <i className='icon-Next' alt="next" />
         </button>
     );

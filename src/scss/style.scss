@@ -1,13 +1,16 @@
 @import "base.scss";
 @import "fonts.scss";
 @import "mixins.scss";
+@import "icons/style.scss";
 
 :root {
     --text:    #657081;
     --dark:    #A3B1C6;
     --mid-d:   #A3B1C6;
     --mid-l:   #E0E4EB;
+    --mid-l-hover:#dbdfe6;
     --light:   #ffffff;
+    --linear: linear-gradient(91.37deg, rgba(255, 255, 255, 0.4) 2.12%, rgba(192, 202, 216, 0.4) 100%);
 
     --primary: #A5A6F6;
     --accent:  #F178B6;
@@ -17,21 +20,42 @@
         -9px -9px 16px rgba(255, 255, 255, 0.5),
         inset 0px 0px 0px rgba(163, 177, 198, 0.3),
         inset 0px -0px 0px rgba(255, 255, 255, 0.3);
+    --outer-shadow-lite:
+        -2px -2px 2px rgba(255, 255, 255, 0.5),
+        2px 2px 2px rgba(163, 177, 198, 0.5),
+        inset 0px 0px 0px rgba(255, 255, 255, 0.5),
+        inset 0px 0px 0px rgba(163, 177, 198, 0.5);
     --inner-shadow:
         0px 0px 0px rgba(163, 177, 198, 0.5),
         0px 0px 0px rgba(255, 255, 255, 0.5),
         inset 9px 9px 16px rgba(163, 177, 198, 0.3),
         inset -9px -9px 16px rgba(255, 255, 255, 0.3);
+    --inner-shadow-lite:
+        0px 0px 0px rgba(255, 255, 255, 0.5),
+        0px 0px 0px rgba(163, 177, 198, 0.5),
+        inset -2px -2px 2px rgba(255, 255, 255, 0.5),
+        inset 2px 2px 2px rgba(163, 177, 198, 0.5);
     --without-shadow:
         0px 0px 0px rgba(163, 177, 198, 0.5),
         0px 0px 0px rgba(255, 255, 255, 0.5),
         inset 0px 0px 0px rgba(163, 177, 198, 0.3),
         inset 0px 0px 0px rgba(255, 255, 255, 0.3);
         
+        
     background: var(--mid-l);
     font-family: SF-Pro;
     letter-spacing: 0.2em;
     color: var(--text);
+}
+
+html {
+    font-size: 16px;
+    @include s9 {
+        font-size: 14px;
+    }
+    @include s4 {
+        font-size: 11px;
+    }
 }
 
 @import "bem/nav.scss";
@@ -41,3 +65,4 @@
 
 @import "bem/player.scss";
 @import "pages/app.scss";
+@import "pages/current.scss";

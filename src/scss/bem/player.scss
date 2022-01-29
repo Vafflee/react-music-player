@@ -1,34 +1,37 @@
 .player {
     min-width: 530px;
+    @include s7 {
+        min-width: 0;
+    }
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 50px;
+    margin-bottom: 3.125rem;
 
     &__header {
         display: flex;
         flex-direction: column;
         align-items: center;
 
-        margin-bottom: 30px;
+        margin-bottom: 1.875rem;
     }
     
     &__title {
         font-weight: 300;
-        font-size: 18px;
-        line-height: 21px;
+        font-size: 1.125rem;
+        line-height: 1.313rem;
         letter-spacing: 0.2em;
     }
 
-    &__author {
+    &__artist {
         font-weight: 700;
-        font-size: 24px;
-        line-height: 29px;
+        font-size: 1.5rem;
+        line-height: 1.813rem;
         letter-spacing: 0.2em;
     }
 
     &__images {
-        margin-bottom: 40px;
+        margin-bottom: 2.5rem;
     }
 
     &__border-outer {
@@ -37,24 +40,24 @@
         align-items: center;
 
         @include figure;
-        border-radius: 25px;
-        width: 350px;
-        height: 350px;
+        border-radius: 1.563rem;
+        width: 21.875rem;
+        height: 21.875rem;
     }
 
     &__border-inner {
         box-shadow: var(--inner-shadow);
-        border-radius: 13px;
-        width: 320px;
-        height: 320px;
+        border-radius: 0.813rem;
+        width: 20rem;
+        height: 20rem;
 
-        padding: 40px;
+        padding: 2.5rem;
         
         img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 10px;
+            border-radius: 0.625rem;
         }
     }
 
@@ -69,24 +72,35 @@
     }
 
     &__time {
-        min-width: 40px;
+        min-width: 1.25rem;
         // font-size: 18px;
         // font-weight: 700;
     }
     
     &__bar-container {
+        position: relative;
         @include figure;
         width: 100%;
-        height: 15px;
+        height: 0.938rem;
         overflow: hidden;
         margin: 0 1em;
+        cursor: pointer;
     }
 
     &__bar {
         background: var(--primary);
         height: 100%;
     }
-
+    
+    &__playhead {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: var(--primary);
+        opacity: 0.2;
+        height: 100%;
+    }
+    
     &__buttons {
         display: flex;
         justify-content: center;
@@ -95,16 +109,16 @@
 
     &__play {
         @include figure;
-        width: 70px;
-        height: 70px;
+        width: 4.375rem;
+        height: 4.375rem;
         border: none;
-        padding: 20px;
+        padding: 1.25rem;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 50%;
-        margin: 0 20px;
-        font-size: 24px;
+        margin: 0 1.25rem;
+        font-size: 1.5rem;
         transition: font-size box-shadow 0.1s;
         
         &:active {
@@ -114,70 +128,70 @@
 
     &__prev {
         @include figure;
-        width: 50px;
-        height: 50px;
+        width: 3.125rem;
+        height: 3.125rem;
         border: none;
-        padding: 14px;
+        padding: 0.875rem;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 50%;
 
         i {
-            margin-left: -3px;
+            margin-left: -0.188rem;
         }
     }
     
     &__next {
         @include figure;
-        width: 50px;
-        height: 50px;
+        width: 3.125rem;
+        height: 3.125rem;
         border: none;
-        padding: 14px;
+        padding: 0.875rem;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 50%;
     
         i {
-            margin-right: -3px;
+            margin-right: -0.188rem;
         }
     }
     
     &__shuffle {
-        width: 50px;
-        height: 50px;
+        width: 3.125rem;
+        height: 3.125rem;
         border: none;
-        padding: 10px;
+        padding: 0.625rem;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 30%;
-        margin-right: 55px;
+        margin-right: 3.438rem;
 
         appearance: none;
 
         &:before {
-            margin-right: -4px;
+            margin-right: -0.25rem;
         }
         
     }
     
     &__repeat {
-        width: 50px;
-        height: 50px;
+        width: 3.125rem;
+        height: 3.125rem;
         border: none;
-        padding: 10px;
+        padding: 0.625rem;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 30%;
-        margin-left: 55px;
+        margin-left: 3.438rem;
 
         appearance: none;
 
         &:before {
-            margin-right: -4px;
+            margin-right: -0.25rem;
         }
     }
 }

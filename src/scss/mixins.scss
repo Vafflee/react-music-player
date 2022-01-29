@@ -1,18 +1,56 @@
+$md1: 320;
+$md2: 480;
+$md3: 768;
+$md4: 992;
+$md5: 1200;
+$md6: 1500;
+
+@mixin s15 {
+  @media (max-width: $md6 + px) {
+    @content;
+  }
+}
+@mixin s12 {
+  @media (max-width: $md5 + px) {
+    @content;
+  }
+}
+@mixin s9 {
+  @media (max-width: $md4 + px) {
+    @content;
+  }
+}
+@mixin s7 {
+  @media (max-width: $md3 + px) {
+    @content;
+  }
+}
+@mixin s4 {
+  @media (max-width: $md2 + px) {
+    @content;
+  }
+}
+@mixin s3 {
+  @media (max-width: $md1 + px) {
+    @content;
+  }
+}
+
 @mixin figure {
     background: var(--mid-l);
     box-shadow: var(--outer-shadow);
-    border-radius: 25px;
+    border-radius: 1.563rem;
 }
 
 @mixin nav-font {
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 700;
     text-transform: uppercase;
 }
 
 @mixin btn-font {
-    font-size: 18px;
-    line-height: 21px;
+    font-size: 1.125rem;
+    line-height: 1.313rem;
     font-weight: 700;
     text-align: center;
     letter-spacing: 0.2em;

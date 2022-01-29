@@ -5,6 +5,10 @@
     
     transition: all 0.1s;
     cursor: pointer;
+    
+    &:hover {
+        background: var(--mid-l-hover);
+    }
 
     &:active {
         box-shadow: var(--without-shadow);

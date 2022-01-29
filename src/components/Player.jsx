@@ -10,50 +10,85 @@ export default class Player extends React.Component {
         super(props);
         
         this.state = {
-            isPlaying: false,
+            shuffle: false,
+            repeat: false,
             currentTime: 0,
             fullTime: 0
         }
-        
+
+        this.playerRef = null;
+    }
+
+    updateInfo() {
+        this.setState({
+            currentTime: this.playerRef.currentTime,
+            fullTime: this.playerRef.duration
+        });
     }
 
     componentDidMount() {
-        this.setState({fullTime: this.playerRef ? this.playerRef.duration : 0})
-        this.interval = setInterval(() => {
-            this.setState({
-                currentTime: this.playerRef ? this.playerRef.currentTime : 0,
-                fullTime: this.playerRef ? this.playerRef.duration : 0
-            });
-        }, 200);
+        this.playerRef.addEventListener('timeupdate', () => this.timeUpdate());
+        this.playerRef.addEventListener('durationchange', () => this.updateInfo());
+    }
+
+    timeUpdate() {
+        this.setState({
+            currentTime: this.playerRef.currentTime,
+            fullTime: this.playerRef.duration
+        });
+    }
+    setCurrentTime(timeInPercent) {
+        this.playerRef.currentTime = this.state.fullTime * timeInPercent / 100;
     }
 
     playClickHandler() {
-        if (this.state.isPlaying) {
+        if (this.props.isPlaying) {
             this.playerRef.pause();
         } else {
             this.playerRef.play();
         }
-        this.setState({isPlaying: !this.state.isPlaying});
+        this.props.setPlaying(!this.props.isPlaying);
+    }
+
+    pause() {
+        if (this.props.isPlaying) {
+            this.playerRef.pause();
+        }
+        this.setState({isPlaying: false});
     }
 
     render() {
-        const title = this.props.currentSong.title;
-        const author = this.props.currentSong.author;
+        let title, artist, src, cover = '';
+        let number = 0;
+        if (this.props.currentSong) {
+            title = this.props.currentSong.title;
+            artist = this.props.currentSong.artist;
+            src = this.props.currentSong.file;
+            cover = this.props.currentSong.cover;
+            number = this.props.currentSong.number;
+        }
         return (
             <div className={'player ' + this.props.className}>
-                <audio ref={ref => {this.playerRef = ref}}>
-                    <source src={this.props.currentSong.url} type='audio/ogg' />
-                    Your browser does not support the audio element
-                </audio>
-                <PlayerHeader title={title} author={author} />
-                <PlayerImages />
+                <audio 
+                    ref={ref => {this.playerRef = ref}}
+                    src={`http://localhost:4000/songfile/${src}`}
+                    type='audio/ogg'
+                    preload='metadata'
+                />
+                <PlayerHeader title={title} artist={artist} />
+                <PlayerImages image={cover} />
                 <PlayerControls
                     playClickHandler={() => this.playClickHandler()}
-                    isPlaying={this.state.isPlaying}
+                    isPlaying={this.props.isPlaying}
                     currentTime={this.state.currentTime}
                     fullTime={this.state.fullTime}
+                    setCurrentTime={(timeInPercent) => this.setCurrentTime(timeInPercent)}
+                    setRepeat={(repeat) => {this.setState({repeat: repeat})}}
+                    setShuffle={(shuffle) => {this.setState({shuffle: shuffle})}}
+                    nextSong={() => {this.pause(); this.props.nextSong()}}
+                    prevSong={() => {this.pause(); this.props.prevSong()}}
+                    number={number}
                 />
-                {/* <PlayButton isPlaying={this.state.isPlaying} playClickHandler={() => this.playClickHandler()} /> */}
             </div>
         )
     };

@@ -12,7 +12,7 @@ module.exports = {
     connectToServer: function(errorHandler) {
         client.connect((err, cli) => {
             if (cli) {
-                _db = cli.db('musicfiles');
+                _db = cli.db('music');
                 // _bucket = new GridFSBucket(_db);
                 console.log('Succesfully connected to MongoDB');
             }

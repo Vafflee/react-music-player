@@ -14,12 +14,9 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      filesList: null,
-      currentSong: {
-          url: 'http://localhost:4000/songfile/test.mp3',
-          title: 'Joy to the world',
-          author: 'John Bartmann'
-      }
+      playlist: null,
+      currentSong: null,
+      isPlaying: false
     };
   }
 
@@ -29,24 +26,47 @@ export default class App extends React.Component {
       alert(`An error occured: ${response.statusText}`)
       return;
     }
-    const filesList = await response.json();
-    this.setState({filesList: filesList})
+    let playlist = await response.json();
+    playlist = playlist.map((song, i) => {
+      song.number = i;
+      return song;
+    });
+    this.setState({playlist: playlist, currentSong: playlist[0]})
   }
 
   componentDidMount() {
     this.getFilesList();
   }
 
+  changeSong(number) {
+    this.setState({currentSong: this.state.playlist[number]});
+  }
+
+  nextSong() {
+    this.changeSong((this.state.currentSong.number + 1 < this.state.playlist.length) ? this.state.currentSong.number + 1 : 0);
+  }
+
+  prevSong() {
+    this.changeSong((this.state.currentSong.number > 0) ? this.state.currentSong.number - 1 : this.state.playlist.length - 1);
+  }
+  
   render() {
     return (
       <Router>
         <div className="app">
           <Header className="app__header" />
-          <Player currentSong={this.state.currentSong} className="app__player"/>
+          <Player 
+            isPlaying={this.state.isPlaying}
+            setPlaying={(isPlaying) => this.setState({isPlaying: isPlaying})}
+            currentSong={this.state.currentSong}
+            className="app__player"
+            nextSong={() => this.nextSong()}
+            prevSong={() => this.prevSong()}
+          />
           <Routes>
             <Route path="/playlists" element={"<Playlists />"} />
             <Route path="/liked" element={'<Liked />'} />
-            <Route path="/" element={<Current filesList={this.state.filesList}/>}/>
+            <Route path="/" element={<Current className="app_current" playlist={this.state.playlist}/>}/>
           </Routes>
         </div>
       </Router>
