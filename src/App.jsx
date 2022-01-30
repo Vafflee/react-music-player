@@ -7,6 +7,7 @@ import {
 import Player from './components/Player.jsx';
 import Header from './components/Header.jsx';
 import Current from './components/Current.jsx';
+import config from './config/config.js';
 
 
 export default class App extends React.Component {
@@ -28,7 +29,7 @@ export default class App extends React.Component {
   }
 
   async getFilesList() {
-    const response = await fetch('http://localhost:4000/record');
+    const response = await fetch('http://localhost:' + config.port + '/record');
     if(!response.ok) {
       alert(`An error occured: ${response.statusText}`)
       return;
@@ -38,7 +39,7 @@ export default class App extends React.Component {
       song.number = i;
       return song;
     });
-    this.playerRef.src = `http://localhost:4000/songfile/${playlist[0].file}`;
+    this.playerRef.src = `http://localhost:${config.port}/songfile/${playlist[0].file}`;
     this.setState({originalPlaylist: playlist, playlist: playlist, currentSong: playlist[0]})
   }
 
@@ -66,7 +67,7 @@ export default class App extends React.Component {
   }
 
   changeSong(index) {
-    this.playerRef.src = `http://localhost:4000/songfile/${this.state.playlist[index].file}`;
+    this.playerRef.src = `http://localhost:${config.port}/songfile/${this.state.playlist[index].file}`;
     this.playerRef.load();
     this.setState({currentSong: this.state.playlist[index], currentIndex: index});
     

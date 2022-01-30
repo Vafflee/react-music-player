@@ -9,12 +9,12 @@ app.use(cors());
 app.use(express.json());
 app.use(require('./routes/record'));
 app.use(require('./routes/song'));
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../build')));
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../build/index.html'));
-    })
-}
+// if (process.env.NODE_ENV === 'production') {
+app.use(express.static(path.join(__dirname, '../build')));
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
+})
+// }
 
 // Get a driver connection
 const dbo = require('./db/conn');

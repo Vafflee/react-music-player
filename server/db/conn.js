@@ -1,5 +1,5 @@
 const {MongoClient, GridFSBucket} = require('mongodb');
-const uri = process.env.ATLAS_URI;
+const uri = 'mongodb+srv://admin:admin@antistress-player.tnwni.mongodb.net';
 const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,

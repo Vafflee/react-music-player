@@ -1,4 +1,5 @@
 import React from 'react';
+import config from '../config/config.js';
 
 const Song = function(props) {
     return(
@@ -7,7 +8,7 @@ const Song = function(props) {
                 <div 
                     className={"song_img " + (props.isActive ? (props.isPlaying ? 'icon-Pause' : 'icon-Play') : '')}
                     onClick={props.isActive ? () => props.play() : null}>
-                    <img src={`http://localhost:4000/songcover/${props.cover}`} alt={props.cover} />
+                    <img src={`http://localhost:${config.port}/songcover/${props.cover}`} alt={props.cover} />
                 </div>
                 <div className="song_title">{props.title}</div>
                 <div className="song_artist">{props.artist}</div>
