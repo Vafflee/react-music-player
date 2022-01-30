@@ -1,8 +1,5 @@
 .player {
-    min-width: 530px;
-    @include s7 {
-        min-width: 0;
-    }
+    min-width: min(530px, 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,25 +10,21 @@
         flex-direction: column;
         align-items: center;
 
-        margin-bottom: 1.875rem;
+        margin-bottom: 1.2rem;
     }
     
     &__title {
-        font-weight: 300;
-        font-size: 1.125rem;
-        line-height: 1.313rem;
-        letter-spacing: 0.2em;
+        font-weight: bold;
+        font-size: 1.4rem;
     }
 
     &__artist {
-        font-weight: 700;
-        font-size: 1.5rem;
-        line-height: 1.813rem;
-        letter-spacing: 0.2em;
+        font-weight: 300;
+        font-size: 1.2rem;
     }
 
     &__images {
-        margin-bottom: 2.5rem;
+        margin-bottom: 1.5rem;
     }
 
     &__border-outer {
@@ -40,18 +33,18 @@
         align-items: center;
 
         @include figure;
-        border-radius: 1.563rem;
-        width: 21.875rem;
-        height: 21.875rem;
+        border-radius: 1.2rem;
+        width: 18.5rem;
+        height: 18.5rem;
     }
 
     &__border-inner {
         box-shadow: var(--inner-shadow);
         border-radius: 0.813rem;
-        width: 20rem;
-        height: 20rem;
+        width: 17rem;
+        height: 17rem;
 
-        padding: 2.5rem;
+        padding: 2rem;
         
         img {
             width: 100%;
@@ -68,7 +61,7 @@
     &__timeline {
         display: flex;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 0.7rem;
     }
 
     &__time {
@@ -81,7 +74,7 @@
         position: relative;
         @include figure;
         width: 100%;
-        height: 0.938rem;
+        height: 0.7rem;
         overflow: hidden;
         margin: 0 1em;
         cursor: pointer;
@@ -109,27 +102,23 @@
 
     &__play {
         @include figure;
-        width: 4.375rem;
-        height: 4.375rem;
+        width: 3.5rem;
+        height: 3.5rem;
         border: none;
         padding: 1.25rem;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 50%;
-        margin: 0 1.25rem;
-        font-size: 1.5rem;
+        margin: 0 1rem;
+        font-size: 1rem;
         transition: font-size box-shadow 0.1s;
-        
-        &:active {
-            font-size: 1.4em;
-        }
     }
 
     &__prev {
         @include figure;
-        width: 3.125rem;
-        height: 3.125rem;
+        width: 2.5rem;
+        height: 2.5rem;
         border: none;
         padding: 0.875rem;
         display: flex;
@@ -144,8 +133,8 @@
     
     &__next {
         @include figure;
-        width: 3.125rem;
-        height: 3.125rem;
+        width: 2.5rem;
+        height: 2.5rem;
         border: none;
         padding: 0.875rem;
         display: flex;
@@ -159,8 +148,8 @@
     }
     
     &__shuffle {
-        width: 3.125rem;
-        height: 3.125rem;
+        width: 2.5rem;
+        height: 2.5rem;
         border: none;
         padding: 0.625rem;
         display: flex;
@@ -178,8 +167,8 @@
     }
     
     &__repeat {
-        width: 3.125rem;
-        height: 3.125rem;
+        width: 2.5rem;
+        height: 2.5rem;
         border: none;
         padding: 0.625rem;
         display: flex;
