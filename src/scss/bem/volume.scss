@@ -1,0 +1,66 @@
+.volume {
+    display: flex;
+    align-items: center;
+
+    &__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        font-size: 1rem;
+        margin-right: 0.5rem;
+        transition: 0.1s;
+        cursor: pointer;
+        &:hover {
+            background: var(--mid-l-hover);
+        }
+        &:active {
+            box-shadow: var(--inner-shadow-lite);
+        }
+
+        i:before {
+            margin-right: -0.5rem;
+        }
+    }
+
+    &__container {
+        position: relative;
+        width: 64px;
+        height: 0.3rem;
+        border-radius: 0.15rem;
+        box-shadow: var(--outer-shadow-lite);
+    }
+
+    &__bar {
+        position: absolute;
+        appearance: none;
+        cursor: pointer;
+        background: transparent;
+        width: 75px;
+        height: 100%;
+        margin: 0 0 0 -5px;
+
+        &::-webkit-slider-thumb {
+            appearance: none;
+
+            background: var(--primary);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        &:focus {
+            outline: none;        
+        }
+    }
+
+    &__level{
+        position: absolute;
+        height: 100%;
+        background: var(--primary);
+        border-radius: 0.15rem;
+        pointer-events: none;
+    }
+}

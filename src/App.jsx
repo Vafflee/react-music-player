@@ -47,6 +47,7 @@ export default class App extends React.Component {
     this.getFilesList();
     this.playerRef.addEventListener('timeupdate', () => this.timeUpdate());
     this.playerRef.addEventListener('durationchange', () => this.updateInfo());
+    this.playerRef.addEventListener('ended', () => this.nextSong());
   }
 
   updateInfo() {
@@ -152,6 +153,7 @@ export default class App extends React.Component {
             nextSong={() => this.nextSong()}
             prevSong={() => this.prevSong()}
             playClickHandler={() => this.playClickHandler()}
+            playerRef={this.playerRef}
           />
           <Routes>
             <Route path="/playlists" element={"<Playlists />"} />

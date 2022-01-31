@@ -1,4 +1,4 @@
 export default {
-    url: 'https://antistress-player.herokuapp.com',
+    url: process.env.NODE_ENV === 'production' ? 'https://antistress-player.herokuapp.com' : 'http://localhost:4000',
     port: process.env.PORT || 4000
 };

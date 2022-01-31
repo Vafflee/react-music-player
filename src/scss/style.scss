@@ -1,7 +1,7 @@
 @import "base.scss";
 @import "fonts.scss";
 @import "mixins.scss";
-@import "icons/style.scss";
+@import "icons/style.css";
 
 :root {
     --text:    #657081;
@@ -62,6 +62,7 @@ html {
 @import "bem/button.scss";
 @import "bem/checkbox.scss";
 @import "bem/header.scss";
+@import "bem/volume.scss";
 
 @import "bem/player.scss";
 @import "pages/app.scss";

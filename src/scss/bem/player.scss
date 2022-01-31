@@ -51,6 +51,7 @@
             height: 100%;
             object-fit: cover;
             border-radius: 0.625rem;
+            box-shadow: 7px 7px 26px -1px rgba(34, 60, 80, 0.2);
         }
     }
 
@@ -95,7 +96,10 @@
     }
     
     &__buttons {
-        display: flex;
+        display: grid;
+        grid-template-areas: 'repeat shuffle prev play next volume volume';
+        grid-template-columns: 1fr 1fr auto auto auto 1fr 1fr;
+        gap: 1rem;
         justify-content: center;
         align-items: center;
     }
@@ -110,7 +114,8 @@
         justify-content: center;
         align-items: center;
         border-radius: 50%;
-        margin: 0 1rem;
+        grid-area: play;
+        // margin: 0 1rem;
         font-size: 1rem;
         transition: font-size box-shadow 0.1s;
     }
@@ -125,6 +130,7 @@
         justify-content: center;
         align-items: center;
         border-radius: 50%;
+        grid-area: prev;
 
         i {
             margin-left: -0.188rem;
@@ -141,6 +147,7 @@
         justify-content: center;
         align-items: center;
         border-radius: 50%;
+        grid-area: next;
     
         i {
             margin-right: -0.188rem;
@@ -148,15 +155,17 @@
     }
     
     &__shuffle {
-        width: 2.5rem;
-        height: 2.5rem;
+        width: 2rem;
+        height: 2rem;
+        font-size: 1rem;
         border: none;
         padding: 0.625rem;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 30%;
-        margin-right: 3.438rem;
+        grid-area: shuffle;
+        // margin-right: 3.438rem;
 
         appearance: none;
 
@@ -167,20 +176,27 @@
     }
     
     &__repeat {
-        width: 2.5rem;
-        height: 2.5rem;
+        width: 2rem;
+        height: 2rem;
+        font-size: 1rem;
         border: none;
-        padding: 0.625rem;
         display: flex;
         justify-content: center;
         align-items: center;
         border-radius: 30%;
-        margin-left: 3.438rem;
+        grid-area: repeat;
+        justify-self: end;
+        // margin-left: 3.438rem;
 
         appearance: none;
 
         &:before {
             margin-right: -0.25rem;
         }
+    }
+
+    &__volume {
+        grid-area: volume;
+        justify-self: center;
     }
 }

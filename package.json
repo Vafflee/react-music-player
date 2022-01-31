@@ -23,7 +23,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "node server.js"
+    "server": "node ./server/server.js",
+    "dev": "concurrently --kill-others \"npm start\" \"npm run server\""
   },
   "eslintConfig": {
     "extends": [
@@ -45,5 +46,8 @@
   },
   "engines": {
     "node": "16.x"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0"
   }
 }

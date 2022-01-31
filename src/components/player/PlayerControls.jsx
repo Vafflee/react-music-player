@@ -4,6 +4,7 @@ import NextButton from './controls/NextButton';
 import ShuffleButton from './controls/ShuffleButton';
 import RepeatButton from './controls/RepeatButton';
 import Timeline from './controls/Timeline';
+import VolumeControl from './controls/VolumeControl';
 
 export default function PlayerControls(props) {
 
@@ -16,10 +17,11 @@ export default function PlayerControls(props) {
                 />
             <div className="player__buttons">
                 <ShuffleButton setShuffle={(shuffle) => {props.setShuffle(shuffle)}} />
+                <RepeatButton setRepeat={(repeat) => {props.setRepeat(repeat)}} />
                 <PrevButton handleClick={() => props.prevSong()} />
                 <PlayButton playClickHandler={() => props.playClickHandler()} isPlaying={props.isPlaying} />
                 <NextButton handleClick={() => props.nextSong()} />
-                <RepeatButton setRepeat={(repeat) => {props.setRepeat(repeat)}} />
+                <VolumeControl className='player__volume' playerRef={props.playerRef}/>
             </div>
         </div>
     );

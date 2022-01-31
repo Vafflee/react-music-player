@@ -34,6 +34,7 @@ export default class Player extends React.Component {
                     nextSong={() => {this.props.nextSong()}}
                     prevSong={() => {this.props.prevSong()}}
                     number={number}
+                    playerRef={this.props.playerRef}
                 />
             </div>
         )

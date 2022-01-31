@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?5euwgi');
-  src:  url('fonts/icomoon.eot?5euwgi#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?5euwgi') format('truetype'),
-    url('fonts/icomoon.woff?5euwgi') format('woff'),
-    url('fonts/icomoon.svg?5euwgi#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?t2acza');
+  src:  url('fonts/icomoon.eot?t2acza#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?t2acza') format('truetype'),
+    url('fonts/icomoon.woff?t2acza') format('woff'),
+    url('fonts/icomoon.svg?t2acza#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,35 +25,44 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-Share:before {
+.icon-Like:before {
   content: "\e900";
   color: #657081;
 }
-.icon-Repeat:before {
+.icon-Next:before {
   content: "\e901";
   color: #657081;
 }
-.icon-Shuffle:before {
+.icon-Pause:before {
   content: "\e902";
   color: #657081;
 }
-.icon-Like:before {
+.icon-Play:before {
   content: "\e903";
   color: #657081;
 }
-.icon-Next:before {
+.icon-Prev:before {
   content: "\e904";
   color: #657081;
 }
-.icon-Pause:before {
+.icon-Shuffle:before {
   content: "\e905";
   color: #657081;
 }
-.icon-Play:before {
+.icon-Share:before {
   content: "\e906";
   color: #657081;
 }
-.icon-Prev:before {
+.icon-Repeat:before {
   content: "\e907";
   color: #657081;
+}
+.icon-volume-high:before {
+  content: "\ea27";
+}
+.icon-volume-low:before {
+  content: "\ea28";
+}
+.icon-volume-mute:before {
+  content: "\ea29";
 }
