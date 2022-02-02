@@ -1,0 +1,79 @@
+.admin {
+    &__add-section {
+        border: 2px solid var(--mid-d);
+        border-radius: 5px;
+        overflow: hidden;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    &__fileinfo {
+        display: flex;
+        align-items: center;
+    }
+    &__infolist {
+        flex-grow: 1;
+    }
+    &__cover {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        border: var(--primary) 2px solid;
+        border-radius: 5px;
+        overflow: hidden;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    li {
+        display: flex;
+    }
+    input {
+        flex-grow: 1;
+    }
+
+    &__songs {
+        border-collapse: collapse;
+        border: 2px solid var(--mid-d);
+        border-radius: 5px;
+        overflow: hidden;
+        
+        td {
+            padding: 0.2rem;
+        }
+
+        tr:nth-child(odd) {
+            background: var(--mid-l);
+        }
+        tr:nth-child(even) {
+            background: var(--mid-l-hover);
+        }
+    }
+
+    &__song-cover {
+        width: 40px;
+        height: 40px;
+        // float: left;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+
+    &__song-title {
+        font-weight: bold;
+        padding-right: 1rem;
+    }
+
+    &__table-header {
+        th {
+            padding: 0.2rem;
+            background: var(--mid-d) !important;
+            color: var(--light);
+        }
+    }
+}

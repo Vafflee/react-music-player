@@ -8,7 +8,7 @@
     --dark:    #A3B1C6;
     --mid-d:   #A3B1C6;
     --mid-l:   #E0E4EB;
-    --mid-l-hover:#dbdfe6;
+    --mid-l-hover:#d8dde4;
     --light:   #ffffff;
     --linear: linear-gradient(91.37deg, rgba(255, 255, 255, 0.4) 2.12%, rgba(192, 202, 216, 0.4) 100%);
 
@@ -65,5 +65,6 @@ html {
 @import "bem/volume.scss";
 
 @import "bem/player.scss";
+@import "pages/admin.scss";
 @import "pages/app.scss";
 @import "pages/current.scss";

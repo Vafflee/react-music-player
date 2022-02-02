@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+import Admin from './components/Admin.jsx';
 import Player from './components/Player.jsx';
 import Header from './components/Header.jsx';
 import Current from './components/Current.jsx';
@@ -156,6 +157,7 @@ export default class App extends React.Component {
             playerRef={this.playerRef}
           />
           <Routes>
+            <Route path="/admin" element={<Admin className={"app_admin"} />} />
             <Route path="/playlists" element={"<Playlists />"} />
             <Route path="/liked" element={'<Liked />'} />
             <Route path="/" element={
