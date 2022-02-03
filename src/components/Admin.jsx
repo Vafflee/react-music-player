@@ -1,5 +1,6 @@
 import config from '../config/config';
 import React from 'react';
+import placeholder from '../img/cover.jpg';
 const jsmt = window.jsmediatags;
 
 export default class Admin extends React.Component {
@@ -133,17 +134,15 @@ export default class Admin extends React.Component {
 
     render() {
         
-        let coverurl;
-        if (this.state.cover) {
-            coverurl = URL.createObjectURL(this.state.cover);
-        }
+        let coverurl = this.state.cover ? URL.createObjectURL(this.state.cover) : placeholder;
+
 
         let songlist = null;
         if (this.state.records) {
             songlist = this.state.records.map((song) => 
                 <tr key={song._id} className="admin__element">
                     <td className="admin__song-cover">
-                        <img src={config.url + '/songcover/' + song.cover} alt={song.name + 'cover'} />
+                        <img src={song.cover ? config.url + '/songcover/' + song.cover : placeholder} alt={song.name + 'cover'} />
                     </td>
                     <td className="admin__song-title">{song.title}</td>
                     <td className="admin__song-artist">{song.artist}</td>
@@ -166,10 +165,7 @@ export default class Admin extends React.Component {
                     </div>
                     <div className="admin__fileinfo">
                             <div className="admin__cover">
-                                {this.state.cover ? 
-                                    <img src={coverurl} alt="cover" />
-                                : 'No cover'
-                                }
+                                <img src={coverurl} alt="cover" />
                             </div>
                             <ul className='admin__infolist'>
                                 <li>File: {this.state.file}</li>

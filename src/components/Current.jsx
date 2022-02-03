@@ -1,5 +1,6 @@
 import React from 'react';
 import config from '../config/config.js';
+import placeholder from '../img/cover.jpg';
 
 const Song = function(props) {
     return(
@@ -8,7 +9,7 @@ const Song = function(props) {
                 <div 
                     className={"song_img " + (props.isActive ? (props.isPlaying ? 'icon-Pause' : 'icon-Play') : '')}
                     onClick={props.isActive ? () => props.play() : null}>
-                    <img src={`${config.url}/songcover/${props.cover}`} alt={props.cover} />
+                    <img src={props.cover ? config.url + '/songcover/' + props.cover : placeholder} alt={props.cover} />
                 </div>
                 <div className="song_title">{props.title}</div>
                 <div className="song_artist">{props.artist}</div>

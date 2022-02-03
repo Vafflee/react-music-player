@@ -2,15 +2,25 @@ const express = require('express');
 const uploadRoutes = express.Router();
 const path = require('path');
 const dbo = require('../db/conn');
+const fs = require('fs');
 
-const validate = function(data) {
+const validate = async function(data) {
+    // Chek empty data
     if (!data.song) return {status: false, cause: 'empty song'};
     if (!data.song.mimetype === 'audio/mpeg') return {status: false, cause: 'song mimetype'};
-    if (!data.cover) return {status: false, cause: 'empty cover'};
-    if (!data.cover.mimetype === 'iage/jpeg') return {status: false, cause: 'cover mimetype'};
+    if (data.cover) {
+        if (!data.cover.mimetype === 'iage/jpeg') return {status: false, cause: 'cover mimetype'};
+        if (fs.existsSync(path.join(__dirname, '../../data/covers', data.cover.name)))
+        return {status: false, cause: 'cover file exist on server'};
+    }
     if (!data.info) return {status: false, cause: 'no info'};
     if (!data.info.title) return {status: false, cause: 'empty title'};
     if (!data.info.artist) return {status: false, cause: 'empty artist'};
+    // Check song existing
+    if (await dbo.getDb().collection('compositions').findOne({title: data.info.title, artist: data.info.artist}))
+        return {status: false, cause: 'song exist in mongodb'};
+    if (fs.existsSync(path.join(__dirname, '../../data/music', data.song.name)))
+        return {status: false, cause: 'song file exist on server'};
     return {status: true, cause: 'ok'};
 }
 
@@ -25,10 +35,11 @@ uploadRoutes.route('/uploadfile/:info').post(async (req, res) => {
         } else {
             const song = req.files.song;
             const cover = req.files.cover;
+            // console.log(cover);
             const info = JSON.parse(req.params.info);
             console.log('Uploading song: ' + info.title);
 
-            const validated = validate({song: song, cover: cover, info: info});
+            const validated = await validate({song: song, cover: cover, info: info});
             console.log('    Validated: ' + validated.status);
 
             if (validated.status) {
@@ -40,18 +51,20 @@ uploadRoutes.route('/uploadfile/:info').post(async (req, res) => {
                     console.log('    Song uploaded to ' + uploadpath);
                 });
 
-                uploadpath = path.join(__dirname, '../../data/covers', cover.name);
-                await cover.mv(uploadpath, (err) => {
-                    if (err)
+                if (cover) {
+                    uploadpath = path.join(__dirname, '../../data/covers', cover.name);
+                    await cover.mv(uploadpath, (err) => {
+                        if (err)
                         return res.status(500).json({error: 'Cover upload error'});
-                    console.log('    Cover uploaded to ' + uploadpath);
-                });
+                        console.log('    Cover uploaded to ' + uploadpath);
+                    });
+                }
 
                 const mongodata = {
                     title: info.title,
                     artist: info.artist,
                     file: song.name.replace('.mp3', ''),
-                    cover: cover.name.replace('.jpg', ''),
+                    cover: cover ? cover.name.replace('.jpg', '') : null,
                 };
                 const db = dbo.getDb();
                 db.collection('compositions').insertOne(mongodata, (err) => {
@@ -64,7 +77,7 @@ uploadRoutes.route('/uploadfile/:info').post(async (req, res) => {
                         message: 'Files are uploaded',
                         data: {
                             song: song.name,
-                            cover: cover.name,
+                            cover: cover ? cover.name : null,
                             info: info
                         }
                     });
