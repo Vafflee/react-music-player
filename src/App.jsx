@@ -7,6 +7,7 @@ import {
 import Admin from './components/Admin.jsx';
 import Player from './components/Player.jsx';
 import Header from './components/Header.jsx';
+import SignWindow from './components/SignWindow.jsx';
 import Current from './components/Current.jsx';
 import config from './config/config.js';
 
@@ -16,6 +17,8 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loginWindowShown: null,
+      user: localStorage.user ? JSON.parse(localStorage.user) : null,
       playlist: null,
       originalPlaylist: null,
       currentSong: null,
@@ -132,6 +135,29 @@ export default class App extends React.Component {
     this.setState({isPlaying: !this.state.isPlaying});
   }
   
+  showLoginWindow(type) {
+    if (type === 'login') {
+      this.setState({loginWindowShown: 'login'});
+    } else {
+      this.setState({loginWindowShown: 'register'});
+    }
+  }
+
+  hideLoginWindow() {
+    this.setState({loginWindowShown: null});
+  }
+
+  logIn(res) {
+    if (res.login) {
+      this.setState({user: res});
+      localStorage.user = JSON.stringify(res);
+    }
+  }
+  logOut() {
+    this.setState({user: null});
+    localStorage.user = '';
+  }
+
   render() {
     
     const src = this.state.currentSong ? this.state.currentSong.file : '';
@@ -139,8 +165,17 @@ export default class App extends React.Component {
     return (
       <Router>
         <div className="app">
+          {
+            this.state.loginWindowShown ? 
+            <SignWindow 
+              windowType={this.state.loginWindowShown} 
+              logIn={(res) => this.logIn(res)} 
+              hideLoginWindow={() => this.hideLoginWindow()} 
+              className='app__login'/>
+            : null
+          }
           <audio ref={ref => {this.playerRef = ref}} type='audio/ogg' />
-          <Header className="app__header" />
+          <Header logOut={() => this.logOut()} showLoginWindow={(type) => this.showLoginWindow(type)} className="app__header" user={this.state.user}/>
           <Player 
             isPlaying={this.state.isPlaying}
             setPlaying={(isPlaying) => this.setState({isPlaying: isPlaying})}
