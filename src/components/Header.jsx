@@ -24,7 +24,7 @@ const Header = function(props) {
     return(
         <header className={props.className + " header"}>
             <div className="header__logo"><span className='header__logo-span'>Antistress </span>player</div>
-            <Nav className="header__nav" />
+            <Nav className="header__nav" user={props.user} />
             {
                 props.user ? <LogOutButton clickHandler={() => props.logOut()}/> 
                 :<div className='header__buttons' ><SignInButton clickHandler={() => props.showLoginWindow('login')}/>

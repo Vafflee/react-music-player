@@ -2,7 +2,10 @@ const express = require('express');
 const uploadRoutes = express.Router();
 const path = require('path');
 const dbo = require('../db/conn');
+const db = require('../db/db');
+const Composition = db.Composition;
 const fs = require('fs');
+const authJwt = require('../middlewares/auth.jwt');
 
 const validate = async function(data) {
     // Chek empty data
@@ -24,7 +27,7 @@ const validate = async function(data) {
     return {status: true, cause: 'ok'};
 }
 
-uploadRoutes.route('/uploadfile/:info').post(async (req, res) => {
+uploadRoutes.route('/uploadfile/:info').post([authJwt.verifyToken, authJwt.isAdmin], async (req, res) => {
     try {
         
         if(!req.files) {
@@ -35,7 +38,6 @@ uploadRoutes.route('/uploadfile/:info').post(async (req, res) => {
         } else {
             const song = req.files.song;
             const cover = req.files.cover;
-            // console.log(cover);
             const info = JSON.parse(req.params.info);
             console.log('Uploading song: ' + info.title);
 
@@ -66,13 +68,10 @@ uploadRoutes.route('/uploadfile/:info').post(async (req, res) => {
                     file: song.name.replace('.mp3', ''),
                     cover: cover ? cover.name.replace('.jpg', '') : null,
                 };
-                const db = dbo.getDb();
-                db.collection('compositions').insertOne(mongodata, (err) => {
-                    if (err) throw err;
-                    console.log('    One object inserted to MongoDB');
-                });
-
-                res.json({
+                const composition = new Composition(mongodata);
+                composition.save(err => {
+                    if (err) return res.status(500).json({message: 'Mongoose save error', error: err.message});
+                    res.json({
                         status: true,
                         message: 'Files are uploaded',
                         data: {
@@ -81,6 +80,7 @@ uploadRoutes.route('/uploadfile/:info').post(async (req, res) => {
                             info: info
                         }
                     });
+                });
 
             } else {
                 res.status(500).json({error: 'Validate error', cause: validated.cause});

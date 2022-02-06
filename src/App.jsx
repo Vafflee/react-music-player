@@ -9,16 +9,18 @@ import Player from './components/Player.jsx';
 import Header from './components/Header.jsx';
 import SignWindow from './components/SignWindow.jsx';
 import Current from './components/Current.jsx';
+import Liked from './components/Liked.jsx';
 import config from './config/config.js';
 
 
 export default class App extends React.Component {
-  
   constructor(props) {
+
     super(props);
     this.state = {
       loginWindowShown: null,
-      user: localStorage.user ? JSON.parse(localStorage.user) : null,
+      user: null,
+      userInfo: null,
       playlist: null,
       originalPlaylist: null,
       currentSong: null,
@@ -47,11 +49,99 @@ export default class App extends React.Component {
     this.setState({originalPlaylist: playlist, playlist: playlist, currentSong: playlist[0]})
   }
 
+  async userFromLocalStorage() {
+    if (!localStorage.user) return;
+    
+    let user = null;
+    try {
+      user = localStorage.user ? JSON.parse(localStorage.user) : null;
+      if (!await this.verifyUser(user.accessToken)) {
+        console.log('Invalid user');
+        localStorage.user = '';
+        return;
+      }
+      // console.log(await this.verifyUser(user.accessToken))
+    } catch (err) {
+      console.log('Can not parse user from localStorage: ' + err.message);
+      localStorage.user = '';
+      return;
+    }
+    
+    this.setState({user: user}, () => this.getUserInfo());
+  }
+
+  getUserInfo() {
+    // console.log(this.state.user)
+    fetch(config.url + '/api/user', {
+      headers: {
+        'x-access-token': this.state.user.accessToken
+      }
+    })
+    .then(res => res.json())
+    .then(info => this.setState({userInfo: info.user}))
+    .catch(err => console.log(err));
+  }
+
+  encodeXForm(details) {
+    let formBody = [];
+    for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    return formBody;
+  }
+
+  likeSong(songId) {
+    // console.log(songId);
+    console.log({
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'x-access-token': this.state.user.accessToken
+      },
+      body: this.encodeXForm({songid: songId})
+    });
+    fetch(config.url + '/api/user/like', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'x-access-token': this.state.user.accessToken
+      },
+      body: this.encodeXForm({songid: songId})
+    })
+    .then(res => res.json())
+    .then(json => {
+      console.log(json);
+      this.getUserInfo();
+    })
+    .catch(err => console.log(err));
+  }
+
   componentDidMount() {
+    this.userFromLocalStorage();
     this.getFilesList();
     this.playerRef.addEventListener('timeupdate', () => this.timeUpdate());
     this.playerRef.addEventListener('durationchange', () => this.updateInfo());
     this.playerRef.addEventListener('ended', () => this.nextSong());
+  }
+
+  async verifyUser(token) {
+    const verified = await fetch(config.url + '/api/auth/verifyuser', {
+      method: "POST",
+      headers: {
+        'x-access-token': token
+      }
+    })
+    .then(res => res.json())
+    .then(json => {
+      // console.log(json);
+      return json.message === 'verified';
+    })
+    .catch(err => console.log(err));
+
+    return verified;
   }
 
   updateInfo() {
@@ -148,19 +238,17 @@ export default class App extends React.Component {
   }
 
   logIn(res) {
-    if (res.login) {
-      this.setState({user: res});
+    if (res.id) {
+      this.setState({user: res}, () => this.getUserInfo());
       localStorage.user = JSON.stringify(res);
     }
   }
   logOut() {
-    this.setState({user: null});
+    this.setState({user: null, userInfo: null});
     localStorage.user = '';
   }
 
   render() {
-    
-    const src = this.state.currentSong ? this.state.currentSong.file : '';
     const currentNumber = this.state.currentSong ? this.state.currentSong.number : 0;
     return (
       <Router>
@@ -175,7 +263,11 @@ export default class App extends React.Component {
             : null
           }
           <audio ref={ref => {this.playerRef = ref}} type='audio/ogg' />
-          <Header logOut={() => this.logOut()} showLoginWindow={(type) => this.showLoginWindow(type)} className="app__header" user={this.state.user}/>
+          <Header
+            logOut={() => this.logOut()}
+            showLoginWindow={(type) => this.showLoginWindow(type)}
+            className="app__header"
+            user={this.state.user}/>
           <Player 
             isPlaying={this.state.isPlaying}
             setPlaying={(isPlaying) => this.setState({isPlaying: isPlaying})}
@@ -192,9 +284,23 @@ export default class App extends React.Component {
             playerRef={this.playerRef}
           />
           <Routes>
-            <Route path="/admin" element={<Admin className={"app_admin"} />} />
+            <Route path="/admin" element={
+              (this.state.userInfo)
+              ? <Admin token={this.state.userInfo.accessToken} className={"app_admin"} verifyUser={() => this.verifyUser()}/>
+              : 'Admin role required'
+            } />
             <Route path="/playlists" element={"<Playlists />"} />
-            <Route path="/liked" element={'<Liked />'} />
+            <Route path="/liked" element={
+              <Liked 
+                className="app__liked"
+                playlist={this.state.playlist}
+                currentSongNumber={currentNumber} 
+                isPlaying={this.state.isPlaying}
+                chooseSong={(number) => this.changeSong(number)} 
+                play={() => this.playClickHandler()}
+                liked={this.state.userInfo ? this.state.userInfo.liked : []}
+                likeSong={(id) => this.likeSong(id)}
+              />} />
             <Route path="/" element={
               <Current 
                 className="app__current" 
@@ -203,6 +309,8 @@ export default class App extends React.Component {
                 isPlaying={this.state.isPlaying}
                 chooseSong={(number) => this.changeSong(number)} 
                 play={() => this.playClickHandler()}
+                liked={this.state.userInfo ? this.state.userInfo.liked : []}
+                likeSong={(id) => this.likeSong(id)}
                 />}/>
           </Routes>
         </div>

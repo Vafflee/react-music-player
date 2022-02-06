@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Nav = function(props) {
   const [state, setState] = React.useState({active: 'Current'});
@@ -18,8 +18,11 @@ const Nav = function(props) {
           Playlists
         </Link>
         <Link
-          onClick={() => {setState({active: 'Liked'})}}
-          to="/liked"
+          onClick={() => {
+              if (props.user) setState({active: 'Liked'})
+              else (alert('Please log in to use this page'))
+            }}
+          to={props.user ? "/liked" : "/"}
           className={"nav__element " + ((state.active === 'Liked') ? 'nav__element_active' : '')}>
           Liked
         </Link>

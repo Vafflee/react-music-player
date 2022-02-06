@@ -18,21 +18,21 @@
         background: var(--mid-l-hover);
     }
     
-    &_active {
+    &__active {
         background: rgba(255, 255, 255, 0.4);
         &:hover {
             background: var(--mid-l);
         }
     }
     
-    &_line:not(:last-child) {
+    &__line:not(:last-child) {
         // content: '';
         width: 100%;
         height: 0.25rem;
         box-shadow: var(--inner-shadow-lite);
     }
     
-    &_img {
+    &__img {
         position: relative;
         grid-area: img;
         border-radius: 0.75rem;
@@ -58,12 +58,12 @@
             opacity: 0.8;
         }
     }
-    &_active > &_img > img {
+    &__active > &__img > img {
         transition: 0.2s;
         filter: blur(1px) brightness(60%);
     }
     
-    &_title {
+    &__title {
         grid-area: title;
         font-weight: bold;
         font-size: 1rem;
@@ -75,7 +75,7 @@
         text-overflow: ellipsis;
     }
 
-    &_artist {
+    &__artist {
         grid-area: artist;
         font-weight: 300;
         font-size: 0.875rem;
@@ -87,7 +87,7 @@
         text-overflow: ellipsis;
     }
 
-    &_like {
+    &__like {
         @include figure;
         appearance: none;
         border: none;
@@ -103,6 +103,10 @@
         &:before {
             margin-right: -0.2em;
             margin-bottom: -0.1em;
+        }
+
+        &_active:before {
+            color: var(--accent);
         }
     }
 }

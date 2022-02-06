@@ -25,7 +25,11 @@ export default class Admin extends React.Component {
     }
 
     async getRecords() {
-        const response = await fetch(config.url + '/record');
+        const response = await fetch(config.url + '/record', {
+            headers: {
+                'x-access-token': this.props.token ?? null
+            }
+        });
         if(!response.ok) {
             console.log(`Fetch error: ${response.statusText}`);
             return;
@@ -54,6 +58,9 @@ export default class Admin extends React.Component {
         // send `POST` request
         fetch(config.url + '/uploadfile/' + JSON.stringify(info), {
             method: 'POST',
+            headers: {
+                'x-access-token': this.props.token ?? null
+            },
             body: fd
         })
         .then(res => res.json())
@@ -125,7 +132,10 @@ export default class Admin extends React.Component {
 
     async deleteSong(id) {
         fetch(config.url + '/deletesong/' + id, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'x-access-token': this.props.token ?? null
+            },
         })
             .then(response => response.json())
             .then(json => {console.log(json); this.getRecords()})

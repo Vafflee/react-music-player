@@ -10,14 +10,15 @@ const verifyToken = (req, res, next) => {
     if (!token) return res.status(403).send({message: 'No x-access-token'});
 
     jwt.verify(token, config.secret, (err, decoded) => {
-        if (err) return res.sttus(401).end({message: 'Unauthorised: ' + err.message});
+        if (err) return res.status(401).send({message: 'Unauthorised: ' + err.message});
         req.userId = decoded.id;
         next();
     })
 }
 
 const isAdmin = (req, res, next) => {
-    User.findById(req.userId)
+    try {
+        User.findById(req.userId)
         .exec((err, user) => {
             
             console.log(user);
@@ -35,6 +36,9 @@ const isAdmin = (req, res, next) => {
                 return res.status(403).send({message: 'Required admin role'});
             })
         })
+    } catch (err) {
+        return res.status(500).send({err: err.message});
+    }
 }
 
 module.exports = {

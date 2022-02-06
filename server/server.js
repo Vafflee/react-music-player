@@ -25,13 +25,15 @@ app.use(require('./routes/song'));
 app.use(require('./routes/uploadfile'));
 app.use(require('./routes/deletesong'));
 app.use(require('./routes/auth.routes'));
-app.use(require('./routes/test.routes'));
+app.use(require('./routes/user.routes'));
 
 if (process.env.NODE_ENV === 'production') {
+// if (true) {
     app.use(express.static(path.join(__dirname, '../build')));
     app.get(['/', '/playlists', '/liked'], (req, res) => {
         res.sendFile(path.join(__dirname, '../build/index.html'));
     })
+    // app.use(require('./routes/admin.routes'));
 }
 
 // Get a driver connection

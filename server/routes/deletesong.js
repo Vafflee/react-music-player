@@ -4,8 +4,9 @@ const path = require('path');
 const dbo = require('../db/conn');
 const ObjectId = require('mongodb').ObjectId;
 const fs = require('fs');
+const authJwt = require('../middlewares/auth.jwt');
 
-deleteRoutes.route('/deletesong/:id').delete(async (req, res) => {
+deleteRoutes.route('/deletesong/:id').delete([authJwt.verifyToken, authJwt.isAdmin], async (req, res) => {
     if (!req.params.id) return res.status(500).json({error: 'Empty id'});
 
     try {

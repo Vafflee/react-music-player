@@ -9,24 +9,30 @@ const bcrypt = require('bcrypt');
 exports.signup = (req, res) => {
     const user = new User({
         login: req.body.login,
-        password: bcrypt.hashSync(req.body.password, 8)
-    })
+        password: bcrypt.hashSync(req.body.password, 8),
+        liked: []
+    });
     user.save((err, user) => {
-
         if (err) return res.status(500).send({message: err.message});
-        if (req.body.roles) {
-            Role.find({
-                name: { $in: req.body.roles }
-            }, (err, roles) => {
+        try {
+            if (req.body.roles) {
+                Role.find({
+                    name: { $in: JSON.parse(req.body.roles) }
+                }, (err, roles) => {
 
-                if (err) return res.status(500).send({message: err.message});
-                user.roles = roles.map(role => role._id);
-                user.save(err => { 
+                    console.log(JSON.parse(req.body.roles));
+                    console.log(roles);
                     if (err) return res.status(500).send({message: err.message});
-                    return res.status(200).send({message: 'User registered succesfully'});
-                });
+                    user.roles = roles.map(role => role._id);
+                    user.save(err => { 
+                        if (err) return res.status(500).send({message: err.message});
+                        return res.status(200).send({message: 'User registered succesfully'});
+                    });
 
-            })
+                })
+            }
+        } catch (err) {
+            res.status(400).send({message: 'Roles parce error', err: err.message})
         }
         
     });
@@ -35,7 +41,7 @@ exports.signup = (req, res) => {
 exports.signin = (req, res) => {
     // console.log(req.body);
     User.findOne({login: req.body.login})
-        .populate('roles', "-__v")
+        .populate('roles')
         .exec((err, user) => {
             if (err) return res.status(500).send({message: err.message});
             if (!user) return res.status(404).send({message: 'User not found'});
@@ -53,9 +59,19 @@ exports.signin = (req, res) => {
 
             res.status(200).send({
                 id: user._id,
-                login: user.login,
-                roles: authorities,
                 accessToken: token
             });
         })
+}
+
+exports.verifyUser = (req, res) => {
+    console.log('userId: ' + req.userId);
+    User.findById(req.userId)
+    .then(((user) => {
+        // console.log(err);
+        // if (err) return res.status(500).send({message: err.message})
+        if (!user) return res.status(401).send({message: 'Unauthorised'})
+        res.status(200).send({message: 'verified'});
+    }))
+    .catch(err => res.status(500).send({message: err.message}));
 }

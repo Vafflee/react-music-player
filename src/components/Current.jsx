@@ -1,31 +1,14 @@
 import React from 'react';
-import config from '../config/config.js';
-import placeholder from '../img/cover.jpg';
-
-const Song = function(props) {
-    return(
-        <>
-            <div className={'current_song song ' + (props.isActive ? 'song_active' : '')} onClick={() => props.clickHandler()} >
-                <div 
-                    className={"song_img " + (props.isActive ? (props.isPlaying ? 'icon-Pause' : 'icon-Play') : '')}
-                    onClick={props.isActive ? () => props.play() : null}>
-                    <img src={props.cover ? config.url + '/songcover/' + props.cover : placeholder} alt={props.cover} />
-                </div>
-                <div className="song_title">{props.title}</div>
-                <div className="song_artist">{props.artist}</div>
-                <input type='checkbox' className="checkbox song_like icon-Like" />
-            </div>
-            <div className="song_line"></div>
-        </>
-    );
-}
+import Song from './Song.jsx';
 
 const Current = function(props) {
-    
+
     const songs = props.playlist
     ? props.playlist.map(
-        (song, index) => <Song 
+        (song, index) => {
+            return <Song 
             key={song.number}
+            id={song._id}
             isActive={props.currentSongNumber === song.number} 
             isPlaying={props.isPlaying} 
             title={song.title} 
@@ -33,7 +16,9 @@ const Current = function(props) {
             cover={song.cover}
             clickHandler={props.currentSongNumber !== song.number ? () => props.chooseSong(index) : () => {return}}
             play={() => props.play()}
-            />)
+            isLiked={props.liked.includes(song._id)}
+            likeSong={(id) => props.likeSong(id)}
+            />})
     : null;
     return(
         <>{
