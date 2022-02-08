@@ -9,15 +9,49 @@
     background: rgba(0, 0, 0, 0.377);
 
     &__form {
-        background: var(--light);
-        padding: 1rem;
+        background: var(--mid-l);
+        border-radius: 1.23rem;
+        padding: 0.5rem 1rem 1rem;
         display: grid;
         grid-template: 1fr 1fr / auto 1fr;
         gap: 0.5rem;
     }
 
+    &__header {
+        grid-column-start: 1;
+        grid-column-end: 3;
+        justify-self: center;
+    }
+
+    &__loginput, &__passinput {
+        border: none;
+        border-radius: 2rem;
+        background: var(--mid-l);
+        box-shadow: var(--inner-shadow-lite);
+        padding: 0.1rem 1rem;
+        &:focus {
+            outline: none;
+        }
+    }
+
     &__submit {
         grid-column-start: 1;
         grid-column-end: 3;
+        box-shadow: var(--outer-shadow);
+        background: var(--mid-l);
+        border: none;
+        border-radius: 1.23rem;
+        padding: 0.2rem 4rem;
+        justify-self: center;
+        color: var(--text);
+        margin-top: 0.6rem;
+        cursor: pointer;
+        transition: 0.2s;
+        &:hover {
+            background: var(--mid-l-hover);
+        }
+        &:active {
+            box-shadow: var(--inner-shadow);
+        }
     }
 }

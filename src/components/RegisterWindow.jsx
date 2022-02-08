@@ -11,6 +11,10 @@ const RegisterWindow = (props) => {
             password: document.querySelector('.login__passinput').value,
             roles: '["user"]'
         }
+        if (!details.login || !details.password) {
+            alert('Please fill all inputs');
+            return;
+        }
         let formBody = [];
         for (var property in details) {
             var encodedKey = encodeURIComponent(property);
@@ -27,14 +31,29 @@ const RegisterWindow = (props) => {
             },
             body: formBody
         })
-        .then(response => response.json())
-        .then(json => {console.log(json); props.hideLoginWindow()})
+        .then(response => {
+            if (response.status === 500) return {message: 'Server error'};
+            if (response.status === 404) return {message: 'Not found'};
+            if (response.status === 400) return {message: 'Roles parce error'};
+            return response.json()
+        })
+        .then(json => {
+            console.log(json);
+            if (json.message === 'Server error') return alert('Server error');
+            if (json.message === 'Not found') return alert('User not found');
+            if (json.message === 'Roles parce error') return alert('Roles parce error');
+            if (json.message === 'User registered succesfully') {
+                props.hideLoginWindow();
+                return;
+            }
+        })
         .catch(err => console.log(err));
     }
 
     return (
         <div className={props.className + " register"} onClick={() => props.hideLoginWindow()}>
             <form onSubmit={(e) => handleSubmit(e)} onClick={(e) => e.stopPropagation()} className='login__form' action={config.url + '/api/auth/signin'} method="post">
+                <h3 className='login__header'>Register</h3>
                 <label className='login__label' htmlFor="login">Login</label>
                 <input className='login__loginput' type="login" name="login" />
                 <label className='login__label' htmlFor="password">Password</label>

@@ -34,7 +34,7 @@ exports.signup = (req, res) => {
         } catch (err) {
             res.status(400).send({message: 'Roles parce error', err: err.message})
         }
-        
+
     });
 }
 
@@ -43,6 +43,7 @@ exports.signin = (req, res) => {
     User.findOne({login: req.body.login})
         .populate('roles')
         .exec((err, user) => {
+
             if (err) return res.status(500).send({message: err.message});
             if (!user) return res.status(404).send({message: 'User not found'});
             
@@ -61,6 +62,7 @@ exports.signin = (req, res) => {
                 id: user._id,
                 accessToken: token
             });
+            
         })
 }
 
