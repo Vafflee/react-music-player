@@ -20,17 +20,18 @@ app.use(express.json());
 // To parse application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-app.use(require('./routes/compositions.routes'));
-app.use(require('./routes/playlists.routes'));
+// app.use(require('./routes/compositions.routes'));
+// app.use(require('./routes/playlists.routes'));
 app.use(require('./routes/song'));
 app.use(require('./routes/uploadfile'));
 app.use(require('./routes/deletesong'));
 app.use(require('./routes/auth.routes'));
 app.use(require('./routes/user.routes'));
-app.get('/api/ping', (req, res) => {
-    console.log('ping');
-    res.status(200).send('pong');
-})
+
+// app.get('/api/ping', (req, res) => {
+//     console.log('ping');
+//     res.status(200).send('pong');
+// })
 
 if (process.env.NODE_ENV === 'production') {
 // if (true) {
