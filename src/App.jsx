@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+// import { Redirect } from 'react-router';
 import Admin from './components/Admin.jsx';
 import Player from './components/Player.jsx';
 import Header from './components/Header.jsx';
@@ -19,40 +20,50 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       loginWindowShown: null,
+
       user: null,
       userInfo: null,
+      loggedIn: false,
+
       playlist: null,
       originalPlaylist: null,
       currentSong: null,
       currentIndex: 0,
+      
       isPlaying: false,
-      shuffle: false,
-      repeat: false,
       currentTime: 0,
-      fullTime: 0
+      fullTime: 0,
+      
+      shuffle: false,
+      repeat: false
     };
     this.playerRef = null;
   }
 
-  async getFilesList() {
-    const response = await fetch(config.url + '/record');
-    if(!response.ok) {
-      alert(`An error occured: ${response.statusText}`)
-      return;
-    }
-    let playlist = await response.json();
-    playlist = playlist.map((song, i) => {
-      song.number = i;
-      return song;
+  async getPlaylist(playlistid) {
+    const response = await fetch(config.url + '/api/playlists/' + playlistid);
+    if (response.status != 200) return alert('Fetch error');
+    const songlist = await response.json();
+
+    const promises = [];
+    songlist.songs.forEach( songId => {
+      promises.push(
+        fetch(config.url + '/api/songs/' + songId)
+          .then(res => res.json())
+      );
     });
-    this.playerRef.src = `${config.url}/songfile/${playlist[0].file}`;
-    this.setState({originalPlaylist: playlist, playlist: playlist, currentSong: playlist[0]})
+
+    Promise.all(promises) // Wait for results of all fetch requests
+      .then(playlist => {
+        this.setPlaylist(playlist, songlist.name, 0);
+      });
   }
 
   async userFromLocalStorage() {
     if (!localStorage.user) return;
     
     let user = null;
+    let loggedIn = false;
     try {
       user = localStorage.user ? JSON.parse(localStorage.user) : null;
       if (!await this.verifyUser(user.accessToken)) {
@@ -60,6 +71,7 @@ export default class App extends React.Component {
         localStorage.user = '';
         return;
       }
+      loggedIn = true;
       // console.log(await this.verifyUser(user.accessToken))
     } catch (err) {
       console.log('Can not parse user from localStorage: ' + err.message);
@@ -67,7 +79,10 @@ export default class App extends React.Component {
       return;
     }
     
-    this.setState({user: user}, () => this.getUserInfo());
+    this.setState({user: user, loggedIn: loggedIn}, () => {
+      console.log('User restored from localStorage');
+      this.getUserInfo();
+    });
   }
 
   getUserInfo() {
@@ -78,7 +93,10 @@ export default class App extends React.Component {
       }
     })
     .then(res => res.json())
-    .then(info => this.setState({userInfo: info.user}))
+    .then(info => {
+      console.log('Got info about ' + info.user.login);
+      this.setState({userInfo: info.user});
+    })
     .catch(err => console.log(err));
   }
 
@@ -95,6 +113,7 @@ export default class App extends React.Component {
 
   likeSong(songId) {
     // console.log(songId);
+    if (!this.state.user) return alert('Please sign in to like songs');
     console.log({
       method: 'POST',
       headers: {
@@ -121,7 +140,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.userFromLocalStorage();
-    this.getFilesList();
+    this.getPlaylist('62061642cccf271570e6cc52');
     this.playerRef.addEventListener('timeupdate', () => this.timeUpdate());
     this.playerRef.addEventListener('durationchange', () => this.updateInfo());
     this.playerRef.addEventListener('ended', () => this.nextSong());
@@ -136,11 +155,11 @@ export default class App extends React.Component {
     })
     .then(res => res.json())
     .then(json => {
-      // console.log(json);
       return json.message === 'verified';
     })
     .catch(err => console.log(err));
-
+    
+    console.log('User verified');
     return verified;
   }
 
@@ -161,19 +180,22 @@ export default class App extends React.Component {
     this.playerRef.currentTime = this.state.fullTime * timeInPercent / 100;
   }
 
-  changeSong(index) {
-    this.playerRef.src = `${config.url}/songfile/${this.state.playlist[index].file}`;
+  async changeSong(index) {
+    this.playerRef.src = `${config.url}/songfile/${this.state.playlist.current[index]._id}`;
     this.playerRef.load();
-    this.setState({currentSong: this.state.playlist[index], currentIndex: index});
+    const song = await (await fetch(config.url + '/api/songs/' + this.state.playlist.current[index]._id)).json();
+    this.setState({currentSong: song, currentIndex: index});
     
     if (this.state.isPlaying) {
       this.playerRef.play();
     }
+
+    console.log('Song changed to ' + index);
   }
 
   nextSong() {
     const number = this.state.currentIndex + 1;
-    if (number < this.state.playlist.length) { 
+    if (number < this.state.playlist.current.length) { 
       this.changeSong(number);
     }
     else if (this.state.repeat) {
@@ -187,22 +209,30 @@ export default class App extends React.Component {
       this.changeSong(number);
     }
     else if (this.state.repeat) {
-      this.changeSong(this.state.playlist.length - 1);
+      this.changeSong(this.state.playlist.current.length - 1);
     }
   }
 
   shufflePlaylist() {
-    const playlist = this.state.originalPlaylist.slice().sort(() => (Math.random() > .5) ? 1 : -1);
-    console.log(playlist);
+    const playlist = this.state.playlist.original.slice().sort(() => (Math.random() > .5) ? 1 : -1);
+    // console.log(playlist);
     this.setState({
-      playlist: playlist,
+      playlist: {
+        name: this.state.playlist.name,
+        current: playlist,
+        original: this.state.playlist.original
+      },
     }, () => this.changeSong(0));
   }
   unshufflePlaylist() {
-    const playlist = this.state.originalPlaylist.slice()
-    console.log(playlist);
+    const playlist = this.state.playlist.original.slice();
+    // console.log(playlist);
     this.setState({
-      playlist: playlist,
+      playlist: {
+        name: this.state.playlist.name,
+        current: playlist,
+        original: this.state.playlist.original
+      },
     }, () => this.changeSong(0)); 
   }
 
@@ -239,17 +269,41 @@ export default class App extends React.Component {
 
   logIn(res) {
     if (res.id) {
-      this.setState({user: res}, () => this.getUserInfo());
+      this.setState({user: res, loggedIn: true}, () => this.getUserInfo());
       localStorage.user = JSON.stringify(res);
+      console.log('User' + res.login + 'loggen in');
     }
   }
   logOut() {
-    this.setState({user: null, userInfo: null});
+    this.setState({user: null, userInfo: null, loggedIn: false});
+    console.log('Log out');
     localStorage.user = '';
   }
 
+  setPlaylist(songlist, name, number) {
+    // const playlist = songlist.map((song, index) => {
+    //   song.number = index;
+    //   return song;
+    // })
+    // console.log('Playlist to set');
+    // console.log(songlist);
+    // console.log(songlist);
+    this.setState({
+      playlist: {
+        name: name,
+        current: songlist,
+        original: songlist
+      },
+      currentSong: songlist[number],
+      currentIndex: number
+    }, () => {
+      console.log('Playlist set to ' + name);
+      this.changeSong(number);
+    })
+  }
+
   render() {
-    const currentNumber = this.state.currentSong ? this.state.currentSong.number : 0;
+    // const currentNumber = this.state.currentSong ? this.state.currentSong.number : 0;
     return (
       <Router>
         <div className="app">
@@ -267,7 +321,9 @@ export default class App extends React.Component {
             logOut={() => this.logOut()}
             showLoginWindow={(type) => this.showLoginWindow(type)}
             className="app__header"
-            user={this.state.user}/>
+            user={this.state.user}
+            loggedIn={this.state.loggedIn}
+            />
           <Player 
             isPlaying={this.state.isPlaying}
             setPlaying={(isPlaying) => this.setState({isPlaying: isPlaying})}
@@ -285,33 +341,37 @@ export default class App extends React.Component {
           />
           <Routes>
             <Route path="/admin" element={
-              (this.state.userInfo)
+              (this.state.usserInfo && this.state.loggedIn)
               ? <Admin token={this.state.userInfo.accessToken} className={"app_admin"} verifyUser={() => this.verifyUser()}/>
-              : 'Admin role required'
+              : 'Sign in as admin to use this page'
             } />
             <Route path="/playlists" element={"<Playlists />"} />
             <Route path="/liked" element={
               <Liked 
                 className="app__liked"
-                playlist={this.state.playlist}
-                currentSongNumber={currentNumber} 
+                playlist={this.state.playlist ? this.state.playlist.current : []}
+                isActive={this.state.playlist ? this.state.playlist.name === 'liked' : false}
+                currentId={this.state.currentSong ? this.state.currentSong._id : ''}
                 isPlaying={this.state.isPlaying}
                 chooseSong={(number) => this.changeSong(number)} 
                 play={() => this.playClickHandler()}
                 liked={this.state.userInfo ? this.state.userInfo.liked : []}
                 likeSong={(id) => this.likeSong(id)}
-              />} />
+                setPlaylist={(songlist, name, number) => this.setPlaylist(songlist, name, number)}c
+              />} 
+            />
             <Route path="/" element={
               <Current 
                 className="app__current" 
-                playlist={this.state.playlist}
-                currentSongNumber={currentNumber} 
+                playlist={this.state.playlist ? this.state.playlist.current : []}
+                currentSongNumber={this.state.currentIndex} 
                 isPlaying={this.state.isPlaying}
                 chooseSong={(number) => this.changeSong(number)} 
                 play={() => this.playClickHandler()}
                 liked={this.state.userInfo ? this.state.userInfo.liked : []}
                 likeSong={(id) => this.likeSong(id)}
-                />}/>
+                // setPlaylist={(songlist, name) => this.setPlaylist(songlist, name)}c
+              />}/>
           </Routes>
         </div>
       </Router>

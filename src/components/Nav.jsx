@@ -1,31 +1,43 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const Nav = function(props) {
-  const [state, setState] = React.useState({active: 'Current'});
+  const [state, setState] = React.useState({active: ''});
+  
+  // React.useEffect(() => {
+  //   if (window.location.href.split('/')[window.location.href.split('/').length - 1] != state.active) {
+  //     let page = 'current';
+  //     if (window.location.href.split('/')[window.location.href.split('/').length - 1] == 'playlists') page = 'playlists';
+  //     if (window.location.href.split('/')[window.location.href.split('/').length - 1] == 'liked') page = 'liked';
+  //     setState({active: page});
+  //   }
+  // });
+
   return (
       <nav className={props.className + " nav"}>
-        <Link 
-          onClick={() => {setState({active: 'Current'})}}
+        <NavLink 
+          // onClick={() => {setState({active: ''})}}
           to="/"
-          className={"nav__element " + ((state.active === 'Current') ? 'nav__element_active' : '')}>
+          className={({ isActive }) => ("nav__element " + (isActive ? 'nav__element_active' : ''))}
+        >
           Current
-        </Link>
-        <Link
-          onClick={() => {setState({active: 'Playlists'})}}
+        </NavLink>
+        <NavLink
+          // onClick={() => {setState({active: 'playlists'})}}
           to="/playlists"
-          className={"nav__element " + ((state.active === 'Playlists') ? 'nav__element_active' : '')}>
+          className={({ isActive }) => ("nav__element " + (isActive ? 'nav__element_active' : ''))}
+        >
           Playlists
-        </Link>
-        <Link
+        </NavLink>
+        <NavLink
           onClick={() => {
-              if (props.user) setState({active: 'Liked'})
-              else (alert('Please log in to use this page'))
+              if (!props.loggedIn) alert('Please log in to use this page');
             }}
-          to={props.user ? "/liked" : "/"}
-          className={"nav__element " + ((state.active === 'Liked') ? 'nav__element_active' : '')}>
+          to={"/liked"}
+          className={({ isActive }) => ("nav__element " + (isActive ? 'nav__element_active' : ''))}
+        >
           Liked
-        </Link>
+        </NavLink>
         {/* <div className="nav__active"></div> */}
       </nav>
   );

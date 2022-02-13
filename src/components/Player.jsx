@@ -16,8 +16,8 @@ export default class Player extends React.Component {
         if (this.props.currentSong) {
             title = this.props.currentSong.title;
             artist = this.props.currentSong.artist;
-            cover = this.props.currentSong.cover;
-            number = this.props.currentSong.number;
+            cover = this.props.currentSong._id;
+            // number = this.props.currentSong.number;
         }
         return (
             <div className={'player ' + this.props.className}>
