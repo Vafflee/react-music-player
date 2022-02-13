@@ -20,8 +20,8 @@ app.use(express.json());
 // To parse application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-// app.use(require('./routes/compositions.routes'));
-// app.use(require('./routes/playlists.routes'));
+app.use(require('./routes/compositions.routes'));
+app.use(require('./routes/playlists.routes'));
 app.use(require('./routes/song'));
 app.use(require('./routes/uploadfile'));
 app.use(require('./routes/deletesong'));
