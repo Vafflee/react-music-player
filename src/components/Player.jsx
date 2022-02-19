@@ -11,18 +11,19 @@ export default class Player extends React.Component {
     }
 
     render() {
-        let title, artist, cover = '';
+        let title, artist, cover, id = null;
         let number = 0;
         if (this.props.currentSong) {
             title = this.props.currentSong.title;
             artist = this.props.currentSong.artist;
-            cover = this.props.currentSong._id;
+            cover = this.props.currentSong.cover;
+            id = this.props.currentSong._id;
             // number = this.props.currentSong.number;
         }
         return (
             <div className={'player ' + this.props.className}>
                 <PlayerHeader title={title} artist={artist} />
-                <PlayerImages image={cover} />
+                <PlayerImages hasImage={cover ? true : false} id={id} />
                 <PlayerControls
                     playClickHandler={() => this.props.playClickHandler()}
                     isPlaying={this.props.isPlaying}

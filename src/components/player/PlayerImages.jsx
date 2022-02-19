@@ -6,7 +6,7 @@ export default function PlayerImages(props) {
         <div className="player__images">
             <div className="player__border-outer">
                 <div className="player__border-inner">
-                    <img src={props.image ? `${config.url}/songcover/${props.image}` : placeholder} alt="test" />
+                    <img src={props.hasImage ? `${config.url}/songcover/${props.id}` : placeholder} alt="test" />
                 </div>
             </div>
         </div>

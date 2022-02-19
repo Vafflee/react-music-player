@@ -4,6 +4,7 @@ const path = require('path');
 const dbo = require('../db/conn');
 const db = require('../db/db');
 const Composition = db.Composition;
+const Playlist = db.Playlist;
 const fs = require('fs');
 const authJwt = require('../middlewares/auth.jwt');
 
@@ -71,16 +72,31 @@ uploadRoutes.route('/uploadfile/:info').post([authJwt.verifyToken, authJwt.isAdm
                 const composition = new Composition(mongodata);
                 composition.save(err => {
                     if (err) return res.status(500).json({message: 'Mongoose save error', error: err.message});
-                    res.json({
-                        status: true,
-                        message: 'Files are uploaded',
-                        data: {
-                            song: song.name,
-                            cover: cover ? cover.name : null,
-                            info: info
-                        }
-                    });
+                    if (info.playlist && info.playlist != 'none') {
+                        Playlist.findById(info.playlist)
+                        .then(playlist => {
+                            playlist.songs.push(composition._id);
+                            console.log(playlist.songs);
+                            playlist.save()
+                            .then(() => {
+                                console.log('Song added to playlist')
+                                res.json({
+                                    status: true,
+                                    message: 'Files are uploaded',
+                                    data: {
+                                        song: song.name,
+                                        cover: cover ? cover.name : null,
+                                        info: info
+                                    }
+                                });    
+                            })
+                            .catch(err => console.log(err.message));
+                        })
+                        .catch(err => console.log(err.message));
+                    }
+                    
                 });
+
 
             } else {
                 res.status(500).json({error: 'Validate error', cause: validated.cause});

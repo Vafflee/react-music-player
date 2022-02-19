@@ -20,8 +20,8 @@ exports.signup = (req, res) => {
                     name: { $in: JSON.parse(req.body.roles) }
                 }, (err, roles) => {
 
-                    console.log(JSON.parse(req.body.roles));
-                    console.log(roles);
+                    // console.log(JSON.parse(req.body.roles));
+                    // console.log(roles);
                     if (err) return res.status(500).send({message: err.message});
                     user.roles = roles.map(role => role._id);
                     user.save(err => { 

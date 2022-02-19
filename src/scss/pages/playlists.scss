@@ -1,0 +1,108 @@
+.playlists {
+    display: grid;
+    grid-template: auto / repeat(3, 1fr);
+    @include s7 {
+        grid-template: auto / repeat(2, 1fr);
+    }
+    // @include s4 {
+    //     grid-template: auto / repeat(2, 1fr);
+    // }
+    gap: 1.5rem;
+    max-width: 700px;
+    
+    &__playist {
+        
+    }
+}
+
+.playlist {
+    display: flex;
+    overflow: hidden;
+    position: relative;
+
+    @include figure;
+
+    &__image {
+
+    }
+
+    &__info {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: 0.2s;
+        cursor: pointer;
+        @include s7 {
+            grid-template: auto / repeat(2, 1fr);
+            background: rgba(0, 0, 0, 0.4);
+            .playlist__name {
+                opacity: 1;
+            }
+        }
+        &:hover {
+            background: rgba(0, 0, 0, 0.4);
+            .playlist__name {
+                opacity: 1;
+            }
+        }
+    }
+
+    &_active &__info {
+        background: rgba(0, 0, 0, 0.4);
+        // transform: translateY(-10px);
+        // padding-bottom: 10px;
+    }
+    
+    &__name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--light);
+        transition: 0.2s;
+        opacity: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    &_active &__name {
+        opacity: 1;
+        transform: translateY(-17px);
+        @include s4 {
+            transform: translateY(-13px);
+        }
+    }
+
+    &__play {
+
+        max-height: 0;
+        opacity: 0;
+        transition: 0.2s;
+        font-size: 1.6rem;
+        &:active:before {
+            color:rgba(255, 255, 255, 1) !important;
+        }
+
+        &:before {
+            color: var(--light);
+            transition: 0.2s;
+        }
+
+        &:hover:before {
+            color: rgba(255, 255, 255, 0.8);
+        }
+    }
+
+    &_active &__play {
+        max-height: 2rem;
+        opacity: 1;
+        transform: translateY(-17px);
+        @include s4 {
+            transform: translateY(-13px);
+        }
+    }
+}

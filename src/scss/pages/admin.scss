@@ -7,6 +7,22 @@
         margin-bottom: 1rem;
     }
 
+    &__add-playlist {
+        
+    }
+
+    &__new-playlsit-name {
+        
+    }
+
+    &__section-title {
+        font-size: 16;
+        text-transform: uppercase;
+        color: var(--primary);
+        text-align: center;
+        margin-bottom: 0.2rem;
+    }
+
     &__fileinfo {
         display: flex;
         align-items: center;
@@ -22,6 +38,7 @@
         border-radius: 5px;
         overflow: hidden;
 
+        position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -36,20 +53,14 @@
 
     &__songs {
         border-collapse: collapse;
-        border: 2px solid var(--mid-d);
-        border-radius: 5px;
-        overflow: hidden;
-        
-        td {
-            padding: 0.2rem;
-        }
+        // border: 1px solid var(--mid-d);
+        border-radius: 10px;
+    }
 
-        tr:nth-child(odd) {
-            background: var(--mid-l);
-        }
-        tr:nth-child(even) {
-            background: var(--mid-l-hover);
-        }
+    &__table {
+        display: flex;
+        flex-direction: column;
+        // overflow: hidden;
     }
 
     &__song-cover {
@@ -66,14 +77,90 @@
 
     &__song-title {
         font-weight: bold;
-        padding-right: 1rem;
+        // padding-right: 1rem;
     }
 
     &__table-header {
-        th {
-            padding: 0.2rem;
-            background: var(--mid-d) !important;
-            color: var(--light);
+        padding: 0.2rem;
+        background: var(--mid-d) !important;
+        border-radius: 10px;
+        color: var(--light);
+        display: grid;
+        gap: 1rem;   
+        grid-template-columns: auto 1fr 1fr auto;
+    }
+    
+    &__element {
+        // display: block;
+        border: none;
+        display: grid;
+        color: var(--text);
+        overflow: hidden;
+        grid-template-columns: auto 1fr 1fr auto;
+        column-gap: 1rem;
+        padding: 0.2rem;
+        &:nth-child(odd) {
+            background: var(--mid-l);
         }
+        &:nth-child(even) {
+            background: var(--mid-l-hover);
+        }
+        &.active {
+            .admin__element-info {
+                padding: 5px;
+                max-height: 5rem;
+            }
+        }
+        &:hover {
+            transition: 0.2s;
+            transform: scale(1.01);
+        }
+        * {
+            justify-self: left;
+        }
+    }
+
+    &__element-info {
+        // width: 100%;
+        max-height: 0;
+        padding: 0;
+        transition: 0.2s;
+        grid-column: 1 / 5;
+        // display: grid;
+        // grid-template-columns: 1fr 1fr;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        // justify-content: center;
+    }
+
+    &__element-playlist {
+        background: var(--light);
+        border-radius: 5px;
+        padding: 5px;
+        &:hover {
+            cursor: pointer;
+            background: rgb(243, 243, 243);
+        }
+        &-remove {
+            background: #eee;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            &:hover {
+                background: #ddd;
+            }
+        }
+    }
+    &__add-element-playlist {
+        background: var(--light);
+        border-radius: 5px;
+        padding: 5px 12px;
+        border: none;
+        &:hover {
+            cursor: pointer;
+            background: rgb(243, 243, 243);
+        }
+        // aspect-ratio: 1;
     }
 }

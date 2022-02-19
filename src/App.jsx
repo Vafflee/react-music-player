@@ -12,6 +12,7 @@ import SignWindow from './components/SignWindow.jsx';
 import Current from './components/Current.jsx';
 import Liked from './components/Liked.jsx';
 import config from './config/config.js';
+import Playlists from "./components/Playlists.jsx";
 
 
 export default class App extends React.Component {
@@ -45,6 +46,7 @@ export default class App extends React.Component {
     if (response.status != 200) return alert('Fetch error');
     const songlist = await response.json();
 
+    // console.log(songlist);
     const promises = [];
     songlist.songs.forEach( songId => {
       promises.push(
@@ -55,6 +57,8 @@ export default class App extends React.Component {
 
     Promise.all(promises) // Wait for results of all fetch requests
       .then(playlist => {
+        console.log("Got a playlist");
+        // console.log(playlist);
         this.setPlaylist(playlist, songlist.name, 0);
       });
   }
@@ -140,7 +144,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     this.userFromLocalStorage();
-    this.getPlaylist('62061642cccf271570e6cc52');
+    this.getPlaylist('620f68dbe405cc228a640c14');
     this.playerRef.addEventListener('timeupdate', () => this.timeUpdate());
     this.playerRef.addEventListener('durationchange', () => this.updateInfo());
     this.playerRef.addEventListener('ended', () => this.nextSong());
@@ -181,6 +185,10 @@ export default class App extends React.Component {
   }
 
   async changeSong(index) {
+    if (!this.state.playlist.current[index]) {
+      console.log('No song: ' + this.state.playlist.current[index]);
+      return;
+    }
     this.playerRef.src = `${config.url}/songfile/${this.state.playlist.current[index]._id}`;
     this.playerRef.load();
     const song = await (await fetch(config.url + '/api/songs/' + this.state.playlist.current[index]._id)).json();
@@ -288,6 +296,7 @@ export default class App extends React.Component {
     // console.log('Playlist to set');
     // console.log(songlist);
     // console.log(songlist);
+    if (songlist.length < 1) console.log('Empty playlist to set');
     this.setState({
       playlist: {
         name: name,
@@ -298,7 +307,10 @@ export default class App extends React.Component {
       currentIndex: number
     }, () => {
       console.log('Playlist set to ' + name);
-      this.changeSong(number);
+      // console.log(songlist);
+      if (this.state.shuffle) this.setShuffle(true);
+      else this.setShuffle(false);
+      // this.changeSong(number);
     })
   }
 
@@ -341,11 +353,23 @@ export default class App extends React.Component {
           />
           <Routes>
             <Route path="/admin" element={
-              (this.state.usserInfo && this.state.loggedIn)
-              ? <Admin token={this.state.userInfo.accessToken} className={"app_admin"} verifyUser={() => this.verifyUser()}/>
+              (this.state.userInfo && this.state.loggedIn)
+              ? <Admin 
+                  token={this.state.user.accessToken}
+                  className={"app_admin"}
+                  verifyUser={() => this.verifyUser()}
+                  playlist={this.state.playlist ? this.state.playlist.current : []}
+                />
               : 'Sign in as admin to use this page'
             } />
-            <Route path="/playlists" element={"<Playlists />"} />
+            <Route path="/playlists" element={
+              <Playlists
+                changePlaylist={id => this.getPlaylist(id)}
+                currentPlaylist={this.state.playlist ? this.state.playlist.name : ''}
+                isPlaying={this.state.isPlaying}
+                play={() => this.playClickHandler()}
+              />
+            } />
             <Route path="/liked" element={
               <Liked 
                 className="app__liked"

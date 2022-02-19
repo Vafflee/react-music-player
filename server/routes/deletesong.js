@@ -2,6 +2,7 @@ const express = require('express');
 const deleteRoutes = express.Router();
 const path = require('path');
 const dbo = require('../db/conn');
+const mdb = require('../db/db');
 const ObjectId = require('mongodb').ObjectId;
 const fs = require('fs');
 const authJwt = require('../middlewares/auth.jwt');
@@ -21,6 +22,17 @@ deleteRoutes.route('/deletesong/:id').delete([authJwt.verifyToken, authJwt.isAdm
             if (err) throw err;
             console.log(`    Object ${req.params.id} was deleted from MongoDB`);
         });
+
+        mdb.Playlist.findOne({
+            songs: req.params.id
+        })
+        .then(pl => {
+            pl.songs = pl.songs.slice().filter(songId => songId != req.params.id);
+            pl.save().then(
+                () => console.log(`    Object ${req.params.id} was deleted from playlist ${pl.name}`)
+            );
+        })
+        .catch(err => console.log(err.message));
 
         // Delete mp3 file if it exist
         let deletepath = path.join(__dirname, '../../data/music', songToDelete.file + '.mp3');

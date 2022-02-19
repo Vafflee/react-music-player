@@ -36,7 +36,7 @@ app.use(require('./routes/user.routes'));
 if (process.env.NODE_ENV === 'production') {
 // if (true) {
     app.use(express.static(path.join(__dirname, '../build')));
-    app.get(['/', '/playlists', '/liked'], (req, res) => {
+    app.get(['/', '/playlists', '/liked', '/admin'], (req, res) => {
         res.sendFile(path.join(__dirname, '../build/index.html'));
     })
     // app.use(require('./routes/admin.routes'));
